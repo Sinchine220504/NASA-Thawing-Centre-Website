@@ -1,0 +1,99 @@
+<% layout('layout') -%>
+<section>
+  <h1 class="text-2xl font-semibold mb-4">Bookings</h1>
+  <div class="overflow-x-auto bg-white shadow rounded">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="px-3 py-2 text-left">Name</th>
+          <th class="px-3 py-2 text-left">Phone</th>
+          <th class="px-3 py-2 text-left">Location</th>
+          <th class="px-3 py-2 text-left">Type</th>
+          <th class="px-3 py-2 text-left">Status</th>
+          <th class="px-3 py-2 text-left">Time</th>
+          <th class="px-3 py-2 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="bookingsTable"></tbody>
+    </table>
+  </div>
+
+  <h2 class="text-xl font-semibold mt-8 mb-3">Services</h2>
+  <form id="createService" class="flex gap-2 mb-3">
+    <input name="name" class="border rounded px-3 py-2" placeholder="Service name" required />
+    <input name="description" class="border rounded px-3 py-2 flex-1" placeholder="Description" required />
+    <button class="bg-blue-700 text-white rounded px-4">Add</button>
+  </form>
+  <ul id="servicesList" class="space-y-2"></ul>
+</section>
+
+<script>
+  const token = localStorage.getItem('ntc_admin_token');
+  if (!token) window.location.href = '/admin';
+
+  async function fetchBookings() {
+    const res = await fetch('/api/bookings', { headers: { Authorization: 'Bearer ' + token } });
+    const data = await res.json();
+    if (!data.success) return;
+    const tbody = document.getElementById('bookingsTable');
+    tbody.innerHTML = '';
+    data.bookings.forEach(b => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class='px-3 py-2'>${b.fullName}</td>
+        <td class='px-3 py-2'>${b.phoneNumber}</td>
+        <td class='px-3 py-2'>${b.location}</td>
+        <td class='px-3 py-2'>${b.serviceType}</td>
+        <td class='px-3 py-2'>${b.status}</td>
+        <td class='px-3 py-2'>${new Date(b.createdAt).toLocaleString()}</td>
+        <td class='px-3 py-2 space-x-2'>
+          <button data-id='${b._id}' data-status='Accepted' class='status bg-yellow-600 text-white px-2 py-1 rounded'>Accept</button>
+          <button data-id='${b._id}' data-status='Completed' class='status bg-green-700 text-white px-2 py-1 rounded'>Complete</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+    document.querySelectorAll('button.status').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await fetch(`/api/bookings/${btn.dataset.id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify({ status: btn.dataset.status }) });
+        fetchBookings();
+      });
+    });
+  }
+
+  async function fetchServices() {
+    const res = await fetch('/api/services');
+    const data = await res.json();
+    const list = document.getElementById('servicesList');
+    list.innerHTML = '';
+    data.services.forEach(s => {
+      const li = document.createElement('li');
+      li.className = 'bg-white shadow rounded p-3 flex items-center justify-between';
+      li.innerHTML = `<span>${s.name} — <span class='text-gray-500'>${s.description}</span></span>
+        <span class='space-x-2'>
+          <button data-id='${s._id}' class='del bg-red-600 text-white px-2 py-1 rounded'>Delete</button>
+        </span>`;
+      list.appendChild(li);
+    });
+    document.querySelectorAll('button.del').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        await fetch(`/api/services/${btn.dataset.id}`, { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } });
+        fetchServices();
+      });
+    });
+  }
+
+  document.getElementById('createService').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const res = await fetch('/api/services', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token }, body: JSON.stringify(payload) });
+    if (res.ok) {
+      form.reset();
+      fetchServices();
+    }
+  });
+
+  fetchBookings();
+  fetchServices();
+</script>
+

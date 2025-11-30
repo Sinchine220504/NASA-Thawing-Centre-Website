@@ -1,0 +1,36 @@
+<% layout('layout') -%>
+<section class="max-w-md mx-auto bg-white shadow rounded p-6">
+  <h1 class="text-2xl font-semibold mb-4">Admin Login</h1>
+  <form id="loginForm" class="space-y-4">
+    <div>
+      <label class="block text-sm mb-1">Email</label>
+      <input name="email" type="email" class="w-full border rounded px-3 py-2" placeholder="admin@example.com" required />
+    </div>
+    <div>
+      <label class="block text-sm mb-1">Password</label>
+      <input name="password" type="password" class="w-full border rounded px-3 py-2" placeholder="••••••••" required />
+    </div>
+    <button class="w-full bg-blue-700 text-white rounded py-2">Login</button>
+  </form>
+  <p id="msg" class="text-sm mt-3"></p>
+</section>
+
+<script>
+  const form = document.getElementById('loginForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+    const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const data = await res.json();
+    const msg = document.getElementById('msg');
+    if (data.success) {
+      localStorage.setItem('ntc_admin_token', data.token);
+      window.location.href = '/admin/dashboard';
+    } else {
+      msg.textContent = data.message || 'Login failed';
+      msg.className = 'text-sm mt-3 text-red-600';
+    }
+  });
+</script>
+
