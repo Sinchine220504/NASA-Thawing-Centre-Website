@@ -1,35 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
+import { ServiceDetail, serviceMetadata } from '@/components/ServiceDetail';
 
-export const metadata = { title: 'Starting Problem — NASA Thawing Centre', description: 'Diagnosis and quick fixes.' };
+export const metadata = serviceMetadata('starting-problem');
 
-export default function StartingProblemPage() {
-  return (
-    <div className="min-h-screen bg-white">
-      <nav className="bg-white border-b">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link className="text-primary font-semibold" href="/">NASA Thawing Centre</Link>
-          <div className="text-sm flex gap-4">
-            <Link href="/services" className="hover:underline">All Services</Link>
-            <Link href="/book-service" className="hover:underline">Book</Link>
-          </div>
-        </div>
-      </nav>
-
-      <main className="max-w-6xl mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold">Starting Problem</h1>
-        <p className="text-gray-700 mt-3 max-w-2xl">Diagnosis and quick fixes for common no-start issues.</p>
-        <ul className="mt-6 list-disc list-inside space-y-2 text-gray-800">
-          <li>Starter/alternator checks</li>
-          <li>Fuel/ignition checks</li>
-          <li>On-spot advisory</li>
-        </ul>
-        <div className="mt-8">
-          <Link href="/book-service" className="bg-primary text-white px-5 py-3 rounded inline-block">Book this service</Link>
-        </div>
-      </main>
-    </div>
-  );
+export default function Page() {
+  return <ServiceDetail slug="starting-problem" />;
 }
-
-

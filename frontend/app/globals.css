@@ -2,51 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Root Variables */
 :root {
-  --color-primary: #0066cc;
-  --color-secondary: #e0f2fe;
-  --text-dark: #0f172a;
-  --bg-light: #ffffff;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
 
-html, body {
-  height: 100%;
+html {
   scroll-behavior: smooth;
 }
 
 body {
-  color: var(--text-dark);
-  background: var(--bg-light);
-  font-family: 'Inter', sans-serif;
+  @apply bg-white text-ink antialiased;
 }
 
-/* Smooth Fade Animation */
-@keyframes fadeUp {
-  0% {
-    opacity: 0;
-    transform: translateY(40px);
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
   }
-}
-
-.fade-up {
-  animation: fadeUp 0.8s ease-out forwards;
-}
-
-/* Button Effects */
-.btn-primary {
-  @apply bg-[var(--color-primary)] text-white px-6 py-3 rounded-md shadow hover:shadow-lg transition hover:bg-blue-700;
-}
-
-.btn-outline {
-  @apply border border-[var(--color-primary)] text-[var(--color-primary)] px-6 py-3 rounded-md hover:bg-[var(--color-primary)] hover:text-white transition;
-}
-
-/* Hero Background */
-.hero-section {
-  background: linear-gradient(135deg, #e0f2ff 0%, #ffffff 100%);
+  .btn-primary {
+    @apply btn bg-primary-600 text-white shadow-sm hover:bg-primary-700;
+  }
+  .btn-outline {
+    @apply btn border border-primary-600 text-primary-700 hover:bg-primary-50;
+  }
+  .btn-ghost {
+    @apply btn text-ink/80 hover:bg-slate-100;
+  }
+  .btn-white {
+    @apply btn bg-white text-primary-700 hover:bg-primary-50;
+  }
+  .card {
+    @apply rounded-2xl border border-slate-200 bg-white shadow-card;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink/80;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-slate-400 transition focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-100;
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-[0.14em] text-primary-600;
+  }
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
 }

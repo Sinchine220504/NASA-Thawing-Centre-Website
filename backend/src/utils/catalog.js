@@ -1,0 +1,35 @@
+// Default service catalogue seeded on first start. Admins can edit/extend it from the dashboard.
+export const DEFAULT_SERVICES = [
+  { name: 'Vehicle Thawing', slug: 'thawing', category: 'Emergency', icon: '❄️', basePrice: 799, order: 1,
+    description: 'Frozen engine, fuel line, locks or windshield? Our crew thaws your vehicle safely on the spot.' },
+  { name: 'Towing', slug: 'towing', category: 'Emergency', icon: '🚛', basePrice: 1450, order: 2,
+    description: 'Flatbed and wheel-lift towing for cars, bikes and SUVs — 24/7, with zero-damage handling.' },
+  { name: 'Emergency Rescue', slug: 'emergency-rescue', category: 'Emergency', icon: '🚨', basePrice: 1499, order: 3,
+    description: 'Stuck in a ditch, snow or flood water? Winch-outs, accident recovery and priority response.' },
+  { name: 'Battery Jumpstart', slug: 'battery-jumpstart', category: 'Roadside Assistance', icon: '🔋', basePrice: 499, order: 10,
+    description: 'Dead battery jumpstarted by professionals, with a free battery health check.' },
+  { name: 'Flat Tyre', slug: 'flat-tyre', category: 'Roadside Assistance', icon: '🛞', basePrice: 399, order: 11,
+    description: 'Tube or tubeless puncture repair, or a spare wheel swap where you are.' },
+  { name: 'Starting Problem', slug: 'starting-problem', category: 'Roadside Assistance', icon: '⚡', basePrice: 599, order: 12,
+    description: 'On-spot diagnosis of ignition, starter and electrical faults to get you moving.' },
+  { name: 'Key Unlock Assistance', slug: 'key-unlock-assistance', category: 'Roadside Assistance', icon: '🔑', basePrice: 699, order: 13,
+    description: 'Locked out or keys lost? Damage-free unlocking by verified technicians.' },
+  { name: 'Fuel Delivery', slug: 'fuel-delivery', category: 'Roadside Assistance', icon: '⛽', basePrice: 299, order: 14,
+    description: 'Ran out of fuel? Petrol or diesel delivered to you (fuel charged at actuals).' },
+  { name: 'Fitment Services', slug: 'fitment-services', category: 'Fitment Services', icon: '🔧', basePrice: 499, order: 20,
+    description: 'Accessory fitment and upgrades done at your doorstep.' },
+  { name: 'Dashcam Installation', slug: 'dashcam-installation', category: 'Fitment Services', icon: '📹', basePrice: 999, order: 21,
+    description: 'Clean, concealed-wire dashcam installation for every drive.' },
+  { name: 'Multimedia System Installation', slug: 'multimedia-system-installation', category: 'Fitment Services', icon: '📱', basePrice: 1499, order: 22,
+    description: 'Android/Apple CarPlay head units, speakers and reverse cameras installed.' },
+  { name: 'Car Inspection', slug: 'car-inspection', category: 'General Repair', icon: '📋', basePrice: 999, order: 30,
+    description: '50-point inspection with a detailed digital report — ideal before trips or purchases.' },
+  { name: 'Bike Express Services', slug: 'bike-express-services', category: 'General Repair', icon: '🏍️', basePrice: 699, order: 31,
+    description: 'General bike service at your doorstep: oil, brakes, chain and more.' },
+];
+
+export const DEFAULT_TECHNICIANS = [
+  { name: 'Ravi Verma', phone: '+91 98100 00001', skills: ['Vehicle Thawing', 'Battery Jumpstart', 'Starting Problem'], vehicleNumber: 'DL01 AB 1201', zone: 'North' },
+  { name: 'Sandeep Rawat', phone: '+91 98100 00002', skills: ['Towing', 'Emergency Rescue'], vehicleNumber: 'DL01 TW 7788', zone: 'Central' },
+  { name: 'Imran Khan', phone: '+91 98100 00003', skills: ['Flat Tyre', 'Key Unlock Assistance', 'Fuel Delivery'], vehicleNumber: 'DL03 CK 4410', zone: 'South' },
+];

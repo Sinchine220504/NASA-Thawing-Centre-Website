@@ -1,12 +1,15 @@
 import { Router } from 'express';
-import { listServices, createService, updateService, deleteService } from '../controllers/service.controller.js';
+import { serviceCrud, listPublicServices, getPublicService } from '../controllers/service.controller.js';
 import { requireAuth } from '../middleware/auth.js';
 
 const router = Router();
 
-router.get('/services', listServices);
-router.post('/services', requireAuth, createService);
-router.patch('/services/:id', requireAuth, updateService);
-router.delete('/services/:id', requireAuth, deleteService);
+router.get('/services', listPublicServices);
+router.get('/services/:slug', getPublicService);
+
+router.get('/admin/services', requireAuth, serviceCrud.list);
+router.post('/admin/services', requireAuth, serviceCrud.create);
+router.patch('/admin/services/:id', requireAuth, serviceCrud.update);
+router.delete('/admin/services/:id', requireAuth, serviceCrud.remove);
 
 export default router;

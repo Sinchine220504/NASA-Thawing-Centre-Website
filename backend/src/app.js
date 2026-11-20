@@ -1,44 +1,43 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import morgan from 'morgan';
-import cookieParser from 'cookie-parser';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-import bookingRoutes from './routes/booking.routes.js';
-import serviceRoutes from './routes/service.routes.js';
-import authRoutes from './routes/auth.routes.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import rateLimit from 'express-rate-limit';
+import { config } from './config.js';
+import apiRoutes from './routes/index.js';
+import { notFound, errorHandler } from './middleware/error.js';
 
 export const createApp = () => {
   const app = express();
+  app.set('trust proxy', 1);
 
-  app.use(cors({ origin: true, credentials: true }));
-  app.use(express.json());
+  app.use(helmet());
+  app.use(
+    cors({
+      origin: (origin, cb) => {
+        // Allow same-origin / server-to-server (no Origin header) and configured frontends
+        // Unknown origins get no CORS headers, so browsers block them
+        cb(null, !origin || config.clientOrigins.includes(origin) || config.clientOrigins.includes('*'));
+      },
+      credentials: true,
+    })
+  );
+  app.use(express.json({ limit: '100kb' }));
   app.use(express.urlencoded({ extended: true }));
-  app.use(cookieParser());
-  app.use(morgan('dev'));
+  if (config.env !== 'test') app.use(morgan('dev'));
 
-  // Static assets for admin UI
-  app.use('/public', express.static(path.join(__dirname, 'public')));
+  // Throttle public write endpoints to limit spam
+  const publicWriteLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: true, legacyHeaders: false });
+  app.use(['/api/bookings', '/api/book', '/api/contact', '/api/auth/login'], (req, res, next) =>
+    req.method === 'POST' ? publicWriteLimiter(req, res, next) : next()
+  );
 
-  // Views (EJS) for basic admin dashboard
-  app.set('views', path.join(__dirname, 'views'));
-  app.set('view engine', 'ejs');
+  app.get('/health', (_req, res) => res.json({ ok: true, uptime: process.uptime() }));
+  app.get('/', (_req, res) => res.json({ name: 'NASA Thawing Centre API', docs: '/api', health: '/health' }));
 
-  app.get('/health', (_req, res) => res.json({ ok: true }));
+  app.use('/api', apiRoutes);
 
-  app.use('/api', bookingRoutes);
-  app.use('/api', serviceRoutes);
-  app.use('/api', authRoutes);
-
-  // Admin pages
-  app.get('/admin', (_req, res) => res.render('login', { title: 'Admin Login' }));
-  app.get('/admin/dashboard', (_req, res) => res.render('admin', { title: 'Admin Dashboard' }));
-
+  app.use(notFound);
+  app.use(errorHandler);
   return app;
 };
-
-
